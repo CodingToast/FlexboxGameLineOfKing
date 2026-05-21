@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>排隊大師 - Flexbox 網頁遊戲 (v6)</title>
     <link rel="stylesheet" href="style.css">
+    <script src="data.js" type="text/javascript" language="javascript"></script>
 </head>
 
 <body>
@@ -109,43 +110,6 @@
             "align-items": ["flex-start", "center", "flex-end", "stretch", "baseline"]
         };
 
-        // 1-1. 初級排隊員專屬題目庫（控制在 1~2 個屬性組合，本展示內建複合測試題）
-        const rookieLevels = [
-            {
-                id: 1,
-                instruction: "【初級第1關：大腸包小腸】攤位在右邊。請點選上方提示中的 <code>justify-content</code> 並選取 <code>flex-end</code> 注入來排隊！",
-                storeStyle: "justify-content: flex-end; align-items: center;",
-                storeHtml: `<div class="store">大腸包小腸</div>`,
-                targetStyle: "justify-content: flex-end; align-items: center; padding-right: 145px;",
-                htmlContent: `<div class="person-shadow student-shadow">🙋</div><div class="person-shadow male-shadow">🙋‍♂️</div><div class="person-shadow female-shadow">🙋‍♀️</div>`,
-                playerContent: `<div class="person student">🙋</div><div class="person male">🙋‍♂️</div><div class="person female">🙋‍♀️</div>`,
-                playerPaddingHint: "padding-right: 145px;"
-            },
-            {
-                id: 2,
-                instruction: "【初級第2關：阿宗麵線】請由下往上垂直反向排隊（column-reverse），並且在中央靠攏（center）。試試看連續注入兩個屬性！",
-                storeStyle: "justify-content: center; align-items: flex-start;",
-                storeHtml: `<div class="store">阿宗麵線</div>`,
-                targetStyle: "flex-direction: column-reverse; justify-content: flex-start; align-items: center; padding-top: 145px;",
-                htmlContent: `<div class="person-shadow male-shadow">🙋‍♂️</div><div class="person-shadow female-shadow">🙋‍♀️</div>`,
-                playerContent: `<div class="person male">🙋‍♂️</div><div class="person female">🙋‍♀️</div>`,
-                playerPaddingHint: "padding-top: 145px;"
-            }
-        ];
-
-        // 1-2. 排隊大師專專屬題目庫（至少 2 個以上屬性複合盲打高難度題）
-        const masterLevels = [
-            {
-                id: 1,
-                instruction: "【大師級第1關：逢甲地瓜球】請手工輸入複合語法。讓隊伍改成垂直由下往上排（column），並在下方垂直置底位置集合（flex-end）！提示參數不開放點擊喔！",
-                storeStyle: "justify-content: center; align-items: flex-end;",
-                storeHtml: `<div class="store">逢甲地瓜球</div>`,
-                targetStyle: "flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 145px;",
-                htmlContent: `<div class="person-shadow student-shadow">🙋</div><div class="person-shadow male-shadow">🙋‍♂️</div><div class="person-shadow female-shadow">🙋‍♀️</div>`,
-                playerContent: `<div class="person student">🙋</div><div class="person male">🙋‍♂️</div><div class="person female">🙋‍♀️</div>`,
-                playerPaddingHint: "padding-bottom: 145px;"
-            }
-        ];
 
         let currentLevelIndex = 0;
         let gameMode = 'master';
