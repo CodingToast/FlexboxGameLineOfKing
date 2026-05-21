@@ -4,435 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>排隊大師-Flexbox 網頁遊戲 </title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Microsoft JhengHei", sans-serif;
-        }
-
-        body {
-            height: 100vh;
-            background-color: #f0f2f5;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* ==================================================
-           【開場首頁圖層】
-           ================================================== */
-        #welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #2c3e50, #1a252f);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .welcome-title {
-            font-size: 48px;
-            color: #f1c40f;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
-
-        .welcome-emoji-group {
-            font-size: 60px;
-            margin-bottom: 30px;
-            animation: bounce 2s infinite alternate;
-        }
-
-        @keyframes bounce {
-            0% {
-                transform: translateY(0);
-            }
-
-            100% {
-                transform: translateY(-15px);
-            }
-        }
-
-        .welcome-desc {
-            font-size: 20px;
-            max-width: 600px;
-            line-height: 1.8;
-            margin-bottom: 40px;
-            color: #bdc3c7;
-        }
-
-        .start-btn {
-            padding: 15px 40px;
-            font-size: 22px;
-            font-weight: bold;
-            color: #fff;
-            background-color: #e67e22;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);
-            transition: all 0.2s ease;
-        }
-
-        .start-btn:hover {
-            background-color: #d35400;
-            transform: scale(1.05);
-        }
-
-        /* ==================================================
-           【主要遊戲畫面佈局】
-           ================================================== */
-        #main-game {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        /* 左邊控制區 */
-        #left-panel {
-            width: 450px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.15);
-            z-index: 10;
-        }
-
-        /* 1. 遊戲標題列 */
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #34495e;
-            padding-bottom: 15px;
-        }
-
-        .game-logo {
-            font-size: 24px;
-            color: #f1c40f;
-            font-weight: bold;
-        }
-
-        .level-switcher {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-btn {
-            background-color: #34495e;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .nav-btn:hover {
-            background-color: #4e6a85;
-        }
-
-        #level-indicator {
-            font-size: 16px;
-            font-weight: bold;
-            color: #e67e22;
-        }
-
-        /* 2. 關卡說明 */
-        .instruction-box {
-            background-color: #34495e;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            line-height: 1.6;
-            font-size: 16px;
-            border-left: 5px solid #2ecc71;
-        }
-
-        /* 3. 屬性提示區 */
-        .hint-box {
-            background-color: #2980b9;
-            color: white;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .hint-box code {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-
-        /* 4. CSS 輸入編輯器 */
-        .editor-container {
-            background-color: #1e1e1e;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-        }
-
-        .css-prefix {
-            color: #569cd6;
-            font-size: 15px;
-        }
-
-        textarea {
-            width: 100%;
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            color: #9cdcfe;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 16px;
-            resize: none;
-            outline: none;
-            line-height: 1.6;
-            margin-top: 5px;
-        }
-
-        .action-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* 來去下一攤按鈕樣式 */
-        #submit-btn {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        #submit-btn:hover:not(:disabled) {
-            background-color: #27ae60;
-        }
-
-        /* 停用狀態 (灰色) */
-        #submit-btn:disabled {
-            background-color: #7f8c8d;
-            color: #bdc3c7;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        /* 成功通關倒數狀態 (亮綠色+呼吸動效) */
-        #submit-btn.success-countdown {
-            background-color: #2ecc71;
-            color: white;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.03);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* 5. 版權說明 */
-        .footer-copyright {
-            text-align: center;
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-top: 15px;
-            border-top: 1px solid #34495e;
-            padding-top: 10px;
-        }
-
-
-        /* ==================================================
-           【右邊遊戲畫布區】
-           ================================================== */
-        #game-area {
-            flex: 1;
-            padding: 20px;
-            background-color: #eef2f3;
-            height: 100%;
-        }
-
-        #game-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            background-color: #dfe6e9;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
-        }
-
-        /* 圖層1: 固定店家 */
-        #store-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 20px;
-            display: flex;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .store {
-            width: 100px;
-            height: 100px;
-            background-color: #e74c3c;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            border: 3px solid #fff;
-            text-align: center;
-            font-size: 15px;
-        }
-
-        /* 圖層2: 目標排隊位置 (純影子) */
-        #target-pond {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 20px;
-            display: flex;
-            z-index: 2;
-        }
-
-        /* 圖層3: 玩家操作隊伍 (純活體客人) */
-        #player-queue {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 20px;
-            display: flex;
-            z-index: 3;
-            pointer-events: none;
-            transition: all 0.2s ease;
-            /* 讓玩家微調時移動更滑順 */
-        }
-
-        /* ==================================================
-           【🙋 客人角色與分色影子樣式】
-           ================================================== */
-        .person {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            border: 3px solid #ffffff;
-        }
-
-        .person.student {
-            background-color: #3498db;
-        }
-
-        .person.male {
-            background-color: #7f8c8d;
-        }
-
-        .person.female {
-            background-color: #fd79a8;
-        }
-
-        .person-shadow {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin: 5px;
-            opacity: 0.4;
-            background-color: rgba(255, 255, 255, 0.6);
-            transition: all 0.3s ease;
-        }
-
-        .person-shadow.student-shadow {
-            border: 4px dashed #3498db;
-        }
-
-        .person-shadow.male-shadow {
-            border: 4px dashed #7f8c8d;
-        }
-
-        .person-shadow.female-shadow {
-            border: 4px dashed #fd79a8;
-        }
-    </style>
+    <title>排隊大師 - Flexbox 網頁遊戲 (v6)</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- 開場首頁 -->
+    <!-- 開場主頁 -->
     <div id="welcome-screen">
         <h1 class="welcome-title">🙋‍♂️ 排隊大師 🙋‍♀️</h1>
         <div class="welcome-emoji-group">🙋🙋‍♂️🙋‍♀️ 🏪 🧋</div>
         <p class="welcome-desc">
-            終於來到夜市了！這裡有好多美味的排隊名店。<br>
-            請使用 <strong>Flexbox</strong> 技巧，根據店家的突發公告與排隊指示，引導飢餓的客人們排好隊伍吧！
+            終於來到夜市了，請使用Flexbox技巧，根據店家公告， 引導 客人排好隊伍。
         </p>
-        <button class="start-btn" onclick="startGame()">成為排隊大師</button>
+        <button class="start-btn" onclick="openModeModal()">成為排隊大師</button>
+    </div>
+
+    <!-- 難度選擇燈箱彈窗 -->
+    <div id="mode-modal">
+        <div class="modal-content">
+            <h2>選擇您的排隊階級</h2>
+            <p>不同階級將解鎖完全不同的專屬題目庫與操作面板唷！</p>
+            <div class="mode-options">
+                <div class="mode-card rookie" onclick="selectMode('rookie')">
+                    <h3>初級排隊員</h3>
+                    <p style="font-size: 13px;">⚡ 點擊注入！點選提示屬性與參數，自動合成 CSS 控制 1~2 個基本屬性</p>
+                </div>
+                <div class="mode-card master" onclick="selectMode('master')">
+                    <h3>排隊大師</h3>
+                    <p style="font-size: 13px;">⌨️ 自由盲打！提示參數僅供觀看，玩家需自行手打輸入 2 個以上複合屬性</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 主要遊戲畫面 -->
     <div id="main-game">
         <div id="left-panel">
             <div>
+                <!-- 遊戲標題與切換列 -->
                 <div class="panel-header">
-                    <div class="game-logo">🙋 排隊大師</div>
+                    <div class="game-logo" style="cursor:pointer;" onclick="location.reload();">🙋 排隊大師</div>
                     <div class="level-switcher">
                         <button class="nav-btn" onclick="prevLevel()">&lt;</button>
                         <span id="level-indicator">關卡 1 / 12</span>
@@ -440,28 +52,45 @@
                     </div>
                 </div>
 
+                <!-- 關卡說明 -->
                 <div class="instruction-box" id="instruction-text">載入中...</div>
 
-                <div class="hint-box" id="hint-text">提示屬性載入中...</div>
+                <!-- 提示核心屬性（四大屬性全部給滿） -->
+                <div id="hint-wrapper" class="hint-box">
+                    <div class="hint-title">💡 點擊核心屬性查看參數：</div>
+                    <div id="global-property-tags">
+                        <span class="property-tag"
+                            onclick="toggleGlobalDropdown('flex-direction')">flex-direction</span>
+                        <span class="property-tag"
+                            onclick="toggleGlobalDropdown('justify-content')">justify-content</span>
+                        <span class="property-tag" onclick="toggleGlobalDropdown('flex-wrap')">flex-wrap</span>
+                        <span class="property-tag" onclick="toggleGlobalDropdown('align-items')">align-items</span>
+                    </div>
+                    <div id="dropdown-options" class="options-dropdown"></div>
+                </div>
 
+                <!-- 通用程式碼編輯器區塊 -->
                 <div class="editor-container">
                     <div class="css-prefix">#night-market-queue {</div>
                     <div class="css-prefix">&nbsp;&nbsp;display: flex;</div>
-                    <textarea id="code-input" placeholder="/* 在此輸入 Flexbox 語法 */justify-content: ...;"
-                        autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+                    <textarea id="code-input" placeholder="/* 請由上方提示注入或在此輸入 Flexbox 語法 */" autocomplete="off"
+                        autocapitalize="off" spellcheck="false"></textarea>
                     <div class="css-prefix">}</div>
                 </div>
             </div>
 
+            <!-- 下方按鈕控制區 -->
             <div class="action-bar">
                 <button onclick="resetLevel()"
-                    style="background-color: #e74c3c; color: white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; font-weight:bold;">重填</button>
+                    style="background-color: #e74c3c; color: white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; font-weight:bold; font-size:13px;">重填</button>
                 <button id="submit-btn" disabled>來去下一攤</button>
             </div>
 
-            <div class="footer-copyright">&copy; 2026 排隊大師 版權所有</div>
+            <!-- 版權說明 -->
+            <div class="footer-copyright">&copy; 2026 排隊大師 網頁遊戲專案 版權所有</div>
         </div>
 
+        <!-- 右邊遊戲畫布 -->
         <div id="game-area">
             <div id="game-container">
                 <div id="store-layer"></div>
@@ -472,87 +101,124 @@
     </div>
 
     <script>
-        const levels = [
+        // 全域四大屬性的核心參數庫
+        const globalPropOptions = {
+            "flex-direction": ["row", "row-reverse", "column", "column-reverse"],
+            "justify-content": ["flex-start", "center", "flex-end", "space-between", "space-around", "space-evenly"],
+            "flex-wrap": ["nowrap", "wrap", "wrap-reverse"],
+            "align-items": ["flex-start", "center", "flex-end", "stretch", "baseline"]
+        };
+
+        // 1-1. 初級排隊員專屬題目庫（控制在 1~2 個屬性組合，本展示內建複合測試題）
+        const rookieLevels = [
             {
                 id: 1,
-                instruction: "【大腸包小腸】攤位在最右邊。老闆大喊：『請大家全部往右邊靠攏排成一列，別擋住隔壁攤位！』",
-                hint: "本關需要使用：<code>justify-content</code>。<br>可選值：<code>flex-start</code> | <code>center</code> | <code>flex-end</code> 等。",
+                instruction: "【初級第1關：大腸包小腸】攤位在右邊。請點選上方提示中的 <code>justify-content</code> 並選取 <code>flex-end</code> 注入來排隊！",
                 storeStyle: "justify-content: flex-end; align-items: center;",
                 storeHtml: `<div class="store">大腸包小腸</div>`,
-                targetStyle: "justify-content: flex-end; align-items: center; padding-right: 125px;",
+                targetStyle: "justify-content: flex-end; align-items: center; padding-right: 145px;",
                 htmlContent: `<div class="person-shadow student-shadow">🙋</div><div class="person-shadow male-shadow">🙋‍♂️</div><div class="person-shadow female-shadow">🙋‍♀️</div>`,
                 playerContent: `<div class="person student">🙋</div><div class="person male">🙋‍♂️</div><div class="person female">🙋‍♀️</div>`,
-                playerPaddingHint: "padding-right: 125px;"
+                playerPaddingHint: "padding-right: 145px;"
             },
             {
                 id: 2,
-                instruction: "【阿宗麵線】在最上方正中間。店員大喊：『請大家配合在中間集合排隊！』",
-                hint: "本關需要使用：<code>justify-content</code> 達成水平置中對齊。",
-                storeStyle: "justify-content: center;",
+                instruction: "【初級第2關：阿宗麵線】請由下往上垂直反向排隊（column-reverse），並且在中央靠攏（center）。試試看連續注入兩個屬性！",
+                storeStyle: "justify-content: center; align-items: flex-start;",
                 storeHtml: `<div class="store">阿宗麵線</div>`,
-                targetStyle: "justify-content: center; align-items: flex-start; padding-top: 125px;",
-                htmlContent: `<div class="person-shadow female-shadow">🙋‍♀️</div><div class="person-shadow male-shadow">🙋‍♂️</div>`,
-                playerContent: `<div class="person female">🙋‍♀️</div><div class="person male">🙋‍♂️</div>`,
-                playerPaddingHint: "padding-top: 125px;"
-            },
+                targetStyle: "flex-direction: column-reverse; justify-content: flex-start; align-items: center; padding-top: 145px;",
+                htmlContent: `<div class="person-shadow male-shadow">🙋‍♂️</div><div class="person-shadow female-shadow">🙋‍♀️</div>`,
+                playerContent: `<div class="person male">🙋‍♂️</div><div class="person female">🙋‍♀️</div>`,
+                playerPaddingHint: "padding-top: 145px;"
+            }
+        ];
+
+        // 1-2. 排隊大師專專屬題目庫（至少 2 個以上屬性複合盲打高難度題）
+        const masterLevels = [
             {
-                id: 3,
-                instruction: "【地瓜球名店】位於最下方。請由下往上『垂直反向』排隊（讓🙋‍♂️在最下層靠近店面）。",
-                hint: "本關需要同時調整軸線與對齊：<code>flex-direction</code> 與 <code>justify-content</code>。",
+                id: 1,
+                instruction: "【大師級第1關：逢甲地瓜球】請手工輸入複合語法。讓隊伍改成垂直由下往上排（column），並在下方垂直置底位置集合（flex-end）！提示參數不開放點擊喔！",
                 storeStyle: "justify-content: center; align-items: flex-end;",
-                storeHtml: `<div class="store">地瓜球</div>`,
-                targetStyle: "flex-direction: column-reverse; justify-content: flex-start; align-items: center; padding-bottom: 125px;",
-                htmlContent: `<div class="person-shadow male-shadow">🙋‍♂️</div><div class="person-shadow female-shadow">🙋‍♀️</div><div class="person-shadow student-shadow">🙋</div>`,
-                playerContent: `<div class="person male">🙋‍♂️</div><div class="person female">🙋‍♀️</div><div class="person student">🙋</div>`,
-                playerPaddingHint: "padding-bottom: 125px;"
+                storeHtml: `<div class="store">逢甲地瓜球</div>`,
+                targetStyle: "flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 145px;",
+                htmlContent: `<div class="person-shadow student-shadow">🙋</div><div class="person-shadow male-shadow">🙋‍♂️</div><div class="person-shadow female-shadow">🙋‍♀️</div>`,
+                playerContent: `<div class="person student">🙋</div><div class="person male">🙋‍♂️</div><div class="person female">🙋‍♀️</div>`,
+                playerPaddingHint: "padding-bottom: 145px;"
             }
         ];
 
         let currentLevelIndex = 0;
-        const totalLevels = 12;
+        let gameMode = 'master';
+        let activeLevels = rookieLevels;
         let checkInterval = null;
         let countdownTimer = null;
-        let isPassed = false; // 用於防止重複觸發倒數
+        let isPassed = false;
 
-        function startGame() {
+        // 用於紀錄初級模式已注入的屬性與值之鍵值對
+        let rookieInjectedStyles = {};
+
+        function openModeModal() {
+            document.getElementById('mode-modal').classList.add('show');
+        }
+
+        function selectMode(mode) {
+            gameMode = mode;
+            activeLevels = (mode === 'rookie') ? rookieLevels : masterLevels;
+
+            // 透過 CSS 類別控制全局選項的游標樣式與點擊行為
+            const wrapper = document.getElementById('hint-wrapper');
+            if (mode === 'rookie') {
+                wrapper.classList.add('rookie-mode-active');
+                wrapper.classList.remove('master-mode-active');
+                document.getElementById('code-input').disabled = true; // 初級不可自行打字
+            } else {
+                wrapper.classList.add('master-mode-active');
+                wrapper.classList.remove('rookie-mode-active');
+                document.getElementById('code-input').disabled = false; // 大師可打字
+            }
+
+            document.getElementById('mode-modal').classList.remove('show');
             document.getElementById('welcome-screen').style.opacity = '0';
-            document.getElementById('welcome-screen').style.visibility = 'hidden';
+            setTimeout(() => { document.getElementById('welcome-screen').style.display = 'none'; }, 500);
             document.getElementById('main-game').style.opacity = '1';
+
+            // 監聽大師模式的打字輸入
+            document.getElementById('code-input').addEventListener('input', updateLivePreviewFromMaster);
+
             loadLevel(currentLevelIndex);
 
-            // 綁定鍵盤輸入事件，達成即時畫面同步
-            document.getElementById('code-input').addEventListener('input', updateLivePreview);
-
-            // 啟動高頻即時偵測器 (每 100ms 檢查一次是否過關)
             if (checkInterval) clearInterval(checkInterval);
             checkInterval = setInterval(autoCheckPosition, 100);
         }
 
         function loadLevel(index) {
-            if (index >= levels.length) {
-                alert("感謝遊玩！後續關卡題目解鎖中！");
-                currentLevelIndex = levels.length - 1;
+            if (index >= activeLevels.length) {
+                alert("太厲害了！您已破完目前該難度庫的所有展示題目，期待您提供下一批正式 12 關題目！");
+                currentLevelIndex = activeLevels.length - 1;
                 return;
             }
 
-            // 重設關卡變數與按鈕狀態
             isPassed = false;
             if (countdownTimer) clearInterval(countdownTimer);
+            rookieInjectedStyles = {}; // 清空初級注入快取
 
+            // 重置按鈕狀態
             const btn = document.getElementById('submit-btn');
             btn.innerText = "來去下一攤";
             btn.disabled = true;
             btn.classList.remove('success-countdown');
 
             const textarea = document.getElementById('code-input');
-            textarea.disabled = false;
             textarea.value = "";
+            if (gameMode === 'master') textarea.disabled = false;
 
-            const level = levels[index];
-            document.getElementById('level-indicator').innerText = `關卡 ${level.id} / ${totalLevels}`;
+            const level = activeLevels[index];
+            document.getElementById('level-indicator').innerText = `關卡 ${level.id} / 12`;
             document.getElementById('instruction-text').innerHTML = level.instruction;
-            document.getElementById('hint-text').innerHTML = level.hint;
 
+            document.getElementById('dropdown-options').classList.remove('show');
+
+            // 渲染畫布
             document.getElementById('store-layer').style.cssText = level.storeStyle;
             document.getElementById('store-layer').innerHTML = level.storeHtml;
             document.getElementById('target-pond').style.cssText = level.targetStyle;
@@ -563,52 +229,90 @@
             playerQueue.style.cssText = level.playerPaddingHint;
         }
 
-        // 【即時同步】把玩家打的字立刻灌進 Canvas
-        function updateLivePreview() {
-            if (isPassed) return; // 過關後鎖定
-            const currentLevel = levels[currentLevelIndex];
-            const playerStyle = document.getElementById('code-input').value;
-            const playerQueue = document.getElementById('player-queue');
-            playerQueue.style.cssText = currentLevel.playerPaddingHint + ";" + playerStyle;
+        // 點擊四大屬性標籤彈出下拉選單
+        function toggleGlobalDropdown(prop) {
+            const dropdown = document.getElementById('dropdown-options');
+            if (dropdown.dataset.currentProp === prop && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            dropdown.dataset.currentProp = prop;
+            dropdown.innerHTML = "";
+
+            globalPropOptions[prop].forEach(val => {
+                dropdown.innerHTML += `<span class="option-val" onclick="handleOptionClick('${prop}', '${val}')">${val}</span>`;
+            });
+            dropdown.classList.add('show');
         }
 
-        // 【自動幾何位置校對】
+        // 【核心控制】處理參數選項點擊事件
+        function handleOptionClick(prop, val) {
+            if (gameMode === 'master') {
+                // 大師模式：唯讀不可點，點擊無反應
+                return;
+            }
+
+            // 初級模式：點擊直接注入語法並更新畫面
+            rookieInjectedStyles[prop] = val;
+
+            // 將多屬性重組輸出到文字框中顯示給 User 看
+            const tx = document.getElementById('code-input');
+            let combinedText = "";
+            for (let p in rookieInjectedStyles) {
+                combinedText += `  ${p}: ${rookieInjectedStyles[p]};\n`;
+            }
+            tx.value = combinedText;
+
+            // 即時同步畫面
+            updateLivePreviewFromRookie();
+        }
+
+        // 【即時同步】初級點擊連動
+        function updateLivePreviewFromRookie() {
+            if (isPassed) return;
+            const level = activeLevels[currentLevelIndex];
+            let combinedCss = "";
+            for (let p in rookieInjectedStyles) {
+                combinedCss += `${p}: ${rookieInjectedStyles[p]};`;
+            }
+            document.getElementById('player-queue').style.cssText = level.playerPaddingHint + ";" + combinedCss;
+        }
+
+        // 【即時同步】大師打字連動
+        function updateLivePreviewFromMaster() {
+            if (isPassed) return;
+            const level = activeLevels[currentLevelIndex];
+            const playerStyle = document.getElementById('code-input').value;
+            document.getElementById('player-queue').style.cssText = level.playerPaddingHint + ";" + playerStyle;
+        }
+
+        // 幾何自動碰撞位置偵測 (每 100ms 一次)
         function autoCheckPosition() {
             if (isPassed) return;
 
-            const playerQueue = document.getElementById('player-queue');
-            const targetPond = document.getElementById('target-pond');
-            const pPeople = playerQueue.querySelectorAll('.person');
-            const tShadows = targetPond.querySelectorAll('.person-shadow');
-
+            const pPeople = document.getElementById('player-queue').querySelectorAll('.person');
+            const tShadows = document.getElementById('target-pond').querySelectorAll('.person-shadow');
             if (pPeople.length === 0 || tShadows.length === 0) return;
 
             let isAllCorrect = true;
-
             pPeople.forEach((person, i) => {
                 if (tShadows[i]) {
                     const pRect = person.getBoundingClientRect();
                     const sRect = tShadows[i].getBoundingClientRect();
-
-                    // 誤差值判定範圍提至 8px 提高極限操作下的容錯
                     if (Math.abs(pRect.left - sRect.left) > 8 || Math.abs(pRect.top - sRect.top) > 8) {
                         isAllCorrect = false;
                     }
-                } else {
-                    isAllCorrect = false;
-                }
+                } else { isAllCorrect = false; }
             });
 
-            // 觸發成功排對條件
-            if (isAllCorrect) {
-                triggerSuccessCountdown();
-            }
+            if (isAllCorrect) triggerSuccessCountdown();
         }
 
-        // 【倒數 3 秒進下一關機制】
+        // 成功排對通關倒數 3 秒機制
         function triggerSuccessCountdown() {
-            isPassed = true; // 鎖定狀態防止重複計時
-            document.getElementById('code-input').disabled = true; // 答對後鎖定代碼輸入
+            isPassed = true;
+            document.getElementById('code-input').disabled = true;
 
             const btn = document.getElementById('submit-btn');
             btn.disabled = false;
@@ -621,14 +325,12 @@
                 secondsLeft--;
                 if (secondsLeft <= 0) {
                     clearInterval(countdownTimer);
-
-                    // 前進下一關
-                    if (currentLevelIndex < levels.length - 1) {
+                    if (currentLevelIndex < activeLevels.length - 1) {
                         currentLevelIndex++;
                         loadLevel(currentLevelIndex);
                     } else {
-                        btn.innerText = "全關卡破關！";
-                        alert("🎉 恭喜！你已經完成了目前釋出的所有排隊試煉！成為排隊大師!!!");
+                        btn.innerText = "全難度破關！";
+                        alert("🎉 太強啦！您已完成目前難度庫的所有挑戰！");
                     }
                 } else {
                     btn.innerText = `來去下一攤 (${secondsLeft}s)`;
@@ -637,7 +339,7 @@
         }
 
         function prevLevel() { if (currentLevelIndex > 0) { currentLevelIndex--; loadLevel(currentLevelIndex); } }
-        function nextLevel() { if (currentLevelIndex < levels.length - 1) { currentLevelIndex++; loadLevel(currentLevelIndex); } }
+        function nextLevel() { if (currentLevelIndex < activeLevels.length - 1) { currentLevelIndex++; loadLevel(currentLevelIndex); } }
         function resetLevel() { loadLevel(currentLevelIndex); }
     </script>
 </body>
